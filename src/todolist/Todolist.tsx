@@ -2,6 +2,7 @@ import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {FilterType, TaskType} from "../App";
 import {Button} from "../components/Button";
 import {AddItemForm} from "../components/AddItemForm";
+import {EditableSpan} from "../components/EditableSpan";
 
 type TodolistPropsType = {
     tasks: TaskType[]
@@ -11,9 +12,11 @@ type TodolistPropsType = {
     changeFilter: (filter: FilterType, todoId: string) => void
     changeTaskStatus: (taskId: string, taskStatus: boolean, todoId: string) => void
     filter: FilterType
-
-    deleteTodolist: (todoId: string) => void
+    changeTaskTitle: (title: string, taskId: string, todoId: string) => void
     todoId: string
+
+    changeTodolistTitle: (title: string, todoId: string) => void
+    deleteTodolist: (todoId: string) => void
 }
 
 export const Todolist = ({
@@ -25,7 +28,9 @@ export const Todolist = ({
                              changeTaskStatus,
                              deleteTodolist,
                              todoId,
-                             filter
+                             filter,
+                             changeTaskTitle,
+                             changeTodolistTitle
                          }: TodolistPropsType) => {
     if (filter === 'active') {
         tasks = tasks.filter(el => !el.isDone)
@@ -45,23 +50,32 @@ export const Todolist = ({
         changeFilter(filter, todoId)
     }
 
+    const changeTodolistTitleHandler = (title: string) => {
+        changeTodolistTitle(title,todoId)
+    }
+
     const taskList = tasks.length === 0
         ? <span>Тасок нет</span>
         : <ul>
-            {tasks.map(el => {
+            {tasks.map(task => {
                 const deleteTaskHandler = () => {
-                    deleteTask(el.id, todoId)
+                    deleteTask(task.id, todoId)
                 }
 
                 const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
                     const newStatusValue = e.currentTarget.checked
-                    changeTaskStatus(el.id, newStatusValue, todoId)
+                    changeTaskStatus(task.id, newStatusValue, todoId)
+                }
+
+                const changeTaskTitleHandler = (title: string) => {
+                    changeTaskTitle(title, task.id, todoId)
                 }
 
                 return (
-                    <li key={el.id}>
-                        <input type="checkbox" checked={el.isDone} onChange={changeTaskStatusHandler}/>
-                        <span>{el.title}</span>
+                    <li key={task.id}>
+                        <input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>
+                        <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler}/>
+                        {/*<span>{el.title}</span>*/}
                         <Button title={'Х'} callback={deleteTaskHandler}/>
                     </li>
                 )
@@ -70,7 +84,10 @@ export const Todolist = ({
 
     return (
         <div>
-            <h3>{title}<Button title={'X'} callback={deleteTodolistHandler}/></h3>
+            <h3>
+                <EditableSpan title={title} changeTitleHandler={changeTodolistTitleHandler}/>
+                <Button title={'X'} callback={deleteTodolistHandler}/>
+            </h3>
             <AddItemForm addItem={addTaskHandler}/>
             {taskList}
             <div>
