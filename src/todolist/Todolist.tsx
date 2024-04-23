@@ -1,8 +1,16 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent} from 'react';
 import {FilterType, TaskType} from "../App";
-import {Button} from "../components/Button";
-import {AddItemForm} from "../components/AddItemForm";
-import {EditableSpan} from "../components/EditableSpan";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
+import {EditableSpan} from "../components/EditableSpan/EditableSpan";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Box from '@mui/material/Box'
+import {filterButtonsContainerSx, getListItemSx} from "./Todolist.styles";
+
 
 type TodolistPropsType = {
     tasks: TaskType[]
@@ -51,12 +59,12 @@ export const Todolist = ({
     }
 
     const changeTodolistTitleHandler = (title: string) => {
-        changeTodolistTitle(title,todoId)
+        changeTodolistTitle(title, todoId)
     }
 
     const taskList = tasks.length === 0
         ? <span>Тасок нет</span>
-        : <ul>
+        : <List>
             {tasks.map(task => {
                 const deleteTaskHandler = () => {
                     deleteTask(task.id, todoId)
@@ -72,29 +80,41 @@ export const Todolist = ({
                 }
 
                 return (
-                    <li key={task.id}>
-                        <input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>
-                        <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler}/>
-                        {/*<span>{el.title}</span>*/}
-                        <Button title={'Х'} callback={deleteTaskHandler}/>
-                    </li>
+                    <ListItem key={task.id}
+                              disableGutters
+                              disablePadding
+                              sx={getListItemSx(task.isDone)}>
+                        <div>
+                            <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler}/>
+                            {/*<input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>*/}
+                            <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler}/>
+                        </div>
+                        <IconButton onClick={deleteTaskHandler}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </ListItem>
                 )
             })}
-        </ul>
+        </List>
 
     return (
         <div>
             <h3>
                 <EditableSpan title={title} changeTitleHandler={changeTodolistTitleHandler}/>
-                <Button title={'X'} callback={deleteTodolistHandler}/>
+                <IconButton onClick={deleteTodolistHandler}>
+                    <DeleteIcon/>
+                </IconButton>
             </h3>
             <AddItemForm addItem={addTaskHandler}/>
             {taskList}
-            <div>
-                <Button title={'All'} callback={() => changeTodolistFilterHandler('all')}/>
-                <Button title={'Active'} callback={() => changeTodolistFilterHandler('active')}/>
-                <Button title={'Completed'} callback={() => changeTodolistFilterHandler('completed')}/>
-            </div>
+            <Box sx={filterButtonsContainerSx}>
+                <Button onClick={() => changeTodolistFilterHandler('all')} children={'All'}
+                        variant={filter === 'all' ? 'contained' : 'outlined'}/>
+                <Button onClick={() => changeTodolistFilterHandler('active')} children={'Active'}
+                        variant={filter === 'active' ? 'contained' : 'outlined'}/>
+                <Button onClick={() => changeTodolistFilterHandler('completed')} children={'Completed'}
+                        variant={filter === 'completed' ? 'contained' : 'outlined'}/>
+            </Box>
         </div>
     );
 };

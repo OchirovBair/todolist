@@ -1,7 +1,7 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import IconButton from '@mui/material/IconButton'
 
 
 type AddItemFormPropsType = {
@@ -36,11 +36,18 @@ export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
     return (
         <div>
             <div>
-                <TextField id="standard-basic" label="Введите текст" variant="standard" onChange={inputHandler} onKeyUp={onKeyHandler} value={value}/>
-                {/*<input value={value} onChange={inputHandler} onKeyUp={onKeyHandler}/>*/}
-                <Button onClick={buttonHandler} disabled={error} variant={'contained'} children={'+'} size={'small'}/>
+                <TextField label="Введите текст"
+                           variant="outlined"
+                           onChange={inputHandler}
+                           onKeyUp={onKeyHandler}
+                           error={error}
+                           helperText={error ? 'Ошибка ввода' : ''}
+                           value={value}
+                           size={'small'}/>
+                <IconButton onClick={buttonHandler} color={'primary'} disabled={error}>
+                    <AddBoxIcon/>
+                </IconButton>
             </div>
-            {error && <span style={{color: 'red'}}>Ошибка ввода</span>}
         </div>
     );
 };
