@@ -1,17 +1,27 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {FilterType, TasksType} from "../App";
+import {FilterType, TaskType} from "../App";
 import {Button} from "../components/Button";
 
 type TodolistPropsType = {
-    tasks: TasksType[]
+    tasks: TaskType[]
     title: string
-    deleteTask: (taskId: string) => void
-    addTask: (title: string) => void
-    changeFilter: (filter: FilterType)=>void
-    changeTaskStatus: (taskId: string, taskStatus: boolean) =>void
+    deleteTask: (taskId: string, todoId:string) => void
+    addTask: (title: string, todoId:string) => void
+    changeFilter: (filter: FilterType, todoId:string) => void
+    changeTaskStatus: (taskId: string, taskStatus: boolean, todoId:string) => void
+    filter:FilterType
+
+    deleteTodolist:(todoId:string)=>void
+    todoId: string
 }
 
-export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, changeTaskStatus}: TodolistPropsType) => {
+export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, changeTaskStatus, deleteTodolist, todoId, filter}: TodolistPropsType) => {
+    if (filter === 'active') {
+        tasks = tasks.filter(el => !el.isDone)
+    } else if (filter === 'completed') {
+        tasks = tasks.filter(el => el.isDone)
+    }
+
     const [inputValue, setInputValue] = useState('')
     const [error, setError] = useState(false)
     const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +34,7 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
         console.log(e)
     }
 
-    const onKeyUpHandler = (e:KeyboardEvent<HTMLInputElement> ) => {
+    const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             addTaskHandler()
         }
@@ -33,7 +43,7 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
     const addTaskHandler = () => {
         const newTaskTitle = inputValue.trim()
         if (newTaskTitle) {
-            addTask(inputValue.trim())
+            addTask(inputValue.trim(), todoId)
             setInputValue('')
         } else {
             setError(true)
@@ -41,17 +51,25 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
         }
     }
 
+    const deleteTodolistHandler = () => {
+        deleteTodolist(todoId)
+    }
+
+    const changeTodolistFilterHandler = (filter: FilterType) => {
+        changeFilter(filter, todoId)
+    }
+
     const taskList = tasks.length === 0
         ? <span>Тасок нет</span>
         : <ul>
             {tasks.map(el => {
                 const deleteTaskHandler = () => {
-                    deleteTask(el.id)
+                    deleteTask(el.id, todoId)
                 }
 
                 const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
                     const newStatusValue = e.currentTarget.checked
-                    changeTaskStatus(el.id, newStatusValue)
+                    changeTaskStatus(el.id, newStatusValue, todoId)
                 }
 
                 return (
@@ -66,7 +84,7 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
 
     return (
         <div>
-            <h3>{title}</h3>
+            <h3>{title}<Button title={'X'} callback={deleteTodolistHandler}/></h3>
             <div>
                 <input value={inputValue} onChange={inputHandler} onKeyUp={onKeyUpHandler}/>
                 <Button title={'+'} callback={addTaskHandler} isDisabled={error}/>
@@ -74,9 +92,9 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
             {error && <span style={{color: 'red'}}>Ошибка ввода</span>}
             {taskList}
             <div>
-                <Button title={'All'} callback={()=>changeFilter('all')}/>
-                <Button title={'Active'} callback={()=>changeFilter('active')}/>
-                <Button title={'Completed'} callback={()=>changeFilter('completed')}/>
+                <Button title={'All'} callback={() => changeTodolistFilterHandler('all')}/>
+                <Button title={'Active'} callback={() => changeTodolistFilterHandler('active')}/>
+                <Button title={'Completed'} callback={() => changeTodolistFilterHandler('completed')}/>
             </div>
         </div>
     );
