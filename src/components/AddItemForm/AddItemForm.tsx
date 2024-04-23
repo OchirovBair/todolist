@@ -1,5 +1,8 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {Button} from "./Button";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
@@ -33,8 +36,9 @@ export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
     return (
         <div>
             <div>
-                <input value={value} onChange={inputHandler} onKeyUp={onKeyHandler}/>
-                <Button title={'+'} callback={buttonHandler} isDisabled={error}/>
+                <TextField id="standard-basic" label="Введите текст" variant="standard" onChange={inputHandler} onKeyUp={onKeyHandler} value={value}/>
+                {/*<input value={value} onChange={inputHandler} onKeyUp={onKeyHandler}/>*/}
+                <Button onClick={buttonHandler} disabled={error} variant={'contained'} children={'+'} size={'small'}/>
             </div>
             {error && <span style={{color: 'red'}}>Ошибка ввода</span>}
         </div>

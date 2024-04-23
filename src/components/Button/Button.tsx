@@ -8,6 +8,7 @@ type ButtonPropsType = {
 
 export const Button = ({title, callback, isDisabled=false}: ButtonPropsType) => {
     return (
-        <button onClick={callback} disabled={isDisabled}>{title}</button>
+        // <Button variant="contained" onClick={callback} disabled={isDisabled}>{title}</Button>
+         <button onClick={callback} disabled={isDisabled}>{title}</button>
     );
 };
