@@ -1,54 +1,40 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {FilterType, TaskType} from "../App";
 import {Button} from "../components/Button";
+import {AddItemForm} from "../components/AddItemForm";
 
 type TodolistPropsType = {
     tasks: TaskType[]
     title: string
-    deleteTask: (taskId: string, todoId:string) => void
-    addTask: (title: string, todoId:string) => void
-    changeFilter: (filter: FilterType, todoId:string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean, todoId:string) => void
-    filter:FilterType
+    deleteTask: (taskId: string, todoId: string) => void
+    addTask: (title: string, todoId: string) => void
+    changeFilter: (filter: FilterType, todoId: string) => void
+    changeTaskStatus: (taskId: string, taskStatus: boolean, todoId: string) => void
+    filter: FilterType
 
-    deleteTodolist:(todoId:string)=>void
+    deleteTodolist: (todoId: string) => void
     todoId: string
 }
 
-export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, changeTaskStatus, deleteTodolist, todoId, filter}: TodolistPropsType) => {
+export const Todolist = ({
+                             tasks,
+                             title,
+                             addTask,
+                             deleteTask,
+                             changeFilter,
+                             changeTaskStatus,
+                             deleteTodolist,
+                             todoId,
+                             filter
+                         }: TodolistPropsType) => {
     if (filter === 'active') {
         tasks = tasks.filter(el => !el.isDone)
     } else if (filter === 'completed') {
         tasks = tasks.filter(el => el.isDone)
     }
 
-    const [inputValue, setInputValue] = useState('')
-    const [error, setError] = useState(false)
-    const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length > 10) {
-            setError(true)
-        } else {
-            setError(false)
-        }
-        setInputValue(e.currentTarget.value)
-        console.log(e)
-    }
-
-    const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            addTaskHandler()
-        }
-    }
-
-    const addTaskHandler = () => {
-        const newTaskTitle = inputValue.trim()
-        if (newTaskTitle) {
-            addTask(inputValue.trim(), todoId)
-            setInputValue('')
-        } else {
-            setError(true)
-            setInputValue('')
-        }
+    const addTaskHandler = (value: string) => {
+        addTask(value, todoId)
     }
 
     const deleteTodolistHandler = () => {
@@ -85,11 +71,7 @@ export const Todolist = ({tasks, title, addTask, deleteTask, changeFilter, chang
     return (
         <div>
             <h3>{title}<Button title={'X'} callback={deleteTodolistHandler}/></h3>
-            <div>
-                <input value={inputValue} onChange={inputHandler} onKeyUp={onKeyUpHandler}/>
-                <Button title={'+'} callback={addTaskHandler} isDisabled={error}/>
-            </div>
-            {error && <span style={{color: 'red'}}>Ошибка ввода</span>}
+            <AddItemForm addItem={addTaskHandler}/>
             {taskList}
             <div>
                 <Button title={'All'} callback={() => changeTodolistFilterHandler('all')}/>
