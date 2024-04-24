@@ -51,13 +51,13 @@ export const changeTodolistTitleAC = (todoId: string, title: string):ChangeTodol
 }
 
 export const addTodolistAC = (title: string):AddTodolistActionType => {
-    return {type:"ADD-TODOLIST", payload: {title}}
+    return {type:"ADD-TODOLIST", payload: {title}} as const
 }
 
 export const changeTodolistFilterAC = (filter: FilterType, todoId: string):ChangeTodolistFilterActionType => {
-    return {type: "CHANGE-TODOLIST-FILTER", payload: {todolistId: todoId, filter}}
+    return {type: "CHANGE-TODOLIST-FILTER", payload: {todolistId: todoId, filter}} as const
 }
 
 export const deleteTodolistAC = (todoId:string):DeleteTodolistActionType => {
-    return {type: "DELETE-TODOLIST", payload: {todolistId: todoId}}
+    return {type: "DELETE-TODOLIST", payload: {todolistId: todoId}} as const
 }
