@@ -1,6 +1,7 @@
 import {v1} from "uuid";
 import {TasksType, TodolistType} from "../App";
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, deleteTaskAC, tasksReducer} from "./tasks-reducer";
+import {addTodolistAC, deleteTodolistAC} from "./todolists-reducer";
 
 test('task title #1 should be change', ()=> {
     const todolistId1 = v1()
@@ -115,4 +116,62 @@ test('status of task #1 in obj with ID=todolistId1 should be changed', ()=> {
 
     expect(endState[todolistId1][0].isDone).toBe(taskStatus)
     expect(endState[todolistId1].length).toBe(startTasks[todolistId1].length)
+})
+
+
+test('after added new todolist should added empty array of tasks', ()=> {
+    const todolistId1 = v1()
+    const todolistId2 = v1()
+
+    const startTasks: TasksType = {
+        [todolistId1]: [
+            {id: v1(), title: 'HTML&CSS', isDone: true},
+            {id: v1(), title: 'JS', isDone: false},
+            {id: v1(), title: 'React', isDone: false},
+            {id: v1(), title: 'Redux', isDone: true},
+            {id: v1(), title: 'TS', isDone: false},
+        ],
+        [todolistId2]: [
+            {id: v1(), title: 'milk', isDone: true},
+            {id: v1(), title: 'bread', isDone: false},
+            {id: v1(), title: 'butter', isDone: true},
+            {id: v1(), title: 'juice', isDone: true},
+            {id: v1(), title: 'ice cream', isDone: false},
+        ],
+    }
+
+
+
+    const endState = tasksReducer(startTasks, addTodolistAC('new todolist'))
+    const newTodolistId = Object.keys(endState)[0]
+    expect(endState[newTodolistId].length).toBe(0)
+    expect(Object.keys(endState)[0]).toBe(newTodolistId)
+})
+
+test('after deleting todolist with id=todolistId1, tasks should be deleted with key=todolistId1', ()=> {
+    const todolistId1 = v1()
+    const todolistId2 = v1()
+
+    const startTasks: TasksType = {
+        [todolistId1]: [
+            {id: v1(), title: 'HTML&CSS', isDone: true},
+            {id: v1(), title: 'JS', isDone: false},
+            {id: v1(), title: 'React', isDone: false},
+            {id: v1(), title: 'Redux', isDone: true},
+            {id: v1(), title: 'TS', isDone: false},
+        ],
+        [todolistId2]: [
+            {id: v1(), title: 'milk', isDone: true},
+            {id: v1(), title: 'bread', isDone: false},
+            {id: v1(), title: 'butter', isDone: true},
+            {id: v1(), title: 'juice', isDone: true},
+            {id: v1(), title: 'ice cream', isDone: false},
+        ],
+    }
+
+
+
+    const endState = tasksReducer(startTasks, deleteTodolistAC(todolistId1))
+    expect(endState[todolistId1]).toBeUndefined()
+    expect(endState[todolistId2].length).toBe(5)
 })

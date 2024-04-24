@@ -26,7 +26,7 @@ test('todolist #1 should change title to "New title"', ()=> {
 })
 
 
-test('length of array of todolists should increase +1', ()=> {
+test('start state should has one more todolist after action', ()=> {
     let todolistId1 = v1()
     let todolistId2 = v1()
 
@@ -62,7 +62,7 @@ test('filter value of todolist #1 should change from "all" to "active"', ()=> {
     expect(endState[0].filter).toBe('active')
 })
 
-test('todolist #1 should be delete', ()=> {
+test('todolist with id=todolistId1 should be delete', ()=> {
     let todolistId1 = v1()
     let todolistId2 = v1()
 
