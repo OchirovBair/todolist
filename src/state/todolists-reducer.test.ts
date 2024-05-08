@@ -4,22 +4,26 @@ import {
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
-    deleteTodolistAC,
+    removeTodolistAC,
     todolistsReducer
 } from "./todolists-reducer";
+let todolistId1:string
+let todolistId2:string
 
-test('todolist #1 should change title to "New title"', ()=> {
-    let todolistId1 = v1()
-    let todolistId2 = v1()
+let startState: TodolistType[]
 
-    // 1. Стартовый state
-    const startState: TodolistType[] = [
+beforeEach(()=> {
+    todolistId1 = v1()
+    todolistId2 = v1()
+
+     startState = [
         { id: todolistId1, title: 'What to learn', filter: 'all' },
         { id: todolistId2, title: 'What to buy', filter: 'all' },
     ]
 
+})
+test('todolist #1 should change title to "New title"', ()=> {
     const endState = todolistsReducer(startState, changeTodolistTitleAC(todolistId1, 'New title'))
-
 
     expect(endState.length).toBe(2)
     expect(endState[0].title).toBe('New title')
@@ -27,17 +31,7 @@ test('todolist #1 should change title to "New title"', ()=> {
 
 
 test('start state should has one more todolist after action', ()=> {
-    let todolistId1 = v1()
-    let todolistId2 = v1()
-
-    // 1. Стартовый state
-    const startState: TodolistType[] = [
-        { id: todolistId1, title: 'What to learn', filter: 'all' },
-        { id: todolistId2, title: 'What to buy', filter: 'all' },
-    ]
-
     const endState = todolistsReducer(startState, addTodolistAC('New todolist'))
-
 
     expect(endState.length).toBe(3)
     expect(endState[0].title).toBe('New todolist')
@@ -45,17 +39,7 @@ test('start state should has one more todolist after action', ()=> {
 
 
 test('filter value of todolist #1 should change from "all" to "active"', ()=> {
-    let todolistId1 = v1()
-    let todolistId2 = v1()
-
-    // 1. Стартовый state
-    const startState: TodolistType[] = [
-        { id: todolistId1, title: 'What to learn', filter: 'all' },
-        { id: todolistId2, title: 'What to buy', filter: 'all' },
-    ]
-
     const endState = todolistsReducer(startState, changeTodolistFilterAC('active' ,todolistId1))
-
 
     expect(endState.length).toBe(2)
     expect(startState[0].filter).toBe('all')
@@ -63,15 +47,6 @@ test('filter value of todolist #1 should change from "all" to "active"', ()=> {
 })
 
 test('todolist with id=todolistId1 should be delete', ()=> {
-    let todolistId1 = v1()
-    let todolistId2 = v1()
-
-    // 1. Стартовый state
-    const startState: TodolistType[] = [
-        { id: todolistId1, title: 'What to learn', filter: 'all' },
-        { id: todolistId2, title: 'What to buy', filter: 'all' },
-    ]
-
     const startTasks: TasksType = {
         [todolistId1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
@@ -89,7 +64,7 @@ test('todolist with id=todolistId1 should be delete', ()=> {
         ],
     }
 
-    const endState = todolistsReducer(startState, deleteTodolistAC(todolistId1))
+    const endState = todolistsReducer(startState, removeTodolistAC(todolistId1))
 
 
     expect(endState.length).toBe(1)

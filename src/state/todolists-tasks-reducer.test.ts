@@ -1,7 +1,7 @@
 import {v1} from "uuid";
 import {TasksType, TodolistType} from "../App";
 import {tasksReducer} from "./tasks-reducer";
-import {addTodolistAC, deleteTodolistAC, todolistsReducer} from "./todolists-reducer";
+import {addTodolistAC, removeTodolistAC, todolistsReducer} from "./todolists-reducer";
 
 test('after adding new todolist should added empty array of tasks', () => {
     const startTasksState: TasksType = {};
@@ -47,8 +47,8 @@ test('after deleting todolist with id=todolistId1, array of tasks with key=todol
     }
 
 
-    const endTasksState = tasksReducer(startTasks, deleteTodolistAC(todolistId1))
-    const endTodolistsState = todolistsReducer(startTodolists, deleteTodolistAC(todolistId1))
+    const endTasksState = tasksReducer(startTasks, removeTodolistAC(todolistId1))
+    const endTodolistsState = todolistsReducer(startTodolists, removeTodolistAC(todolistId1))
 
     expect(endTasksState[todolistId1]).toBeUndefined()
     expect(endTodolistsState[0].id).toBe(todolistId2)
