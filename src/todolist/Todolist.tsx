@@ -12,6 +12,7 @@ import Box from '@mui/material/Box'
 import {filterButtonsContainerSx, getListItemSx} from "./Todolist.styles";
 import {MiuButton} from "../components/MUIButton/MiuButton";
 import {Task} from "../task/Task";
+import {TaskWithRedux} from "../task/TaskWithRedux";
 
 
 type TodolistPropsType = {
@@ -81,12 +82,13 @@ export const Todolist = memo(({
         ? <span>Тасок нет</span>
         : <List>
             {tasksMemo.map(task => {
-                return <Task key={task.id}
-                             task={task}
-                             removeTask={removeTask}
-                             changeTaskStatus={changeTaskStatus}
-                             changeTaskTitle={changeTaskTitle}
-                             todoId={todoId}/>
+                // return <Task key={task.id}
+                //              task={task}
+                //              removeTask={removeTask}
+                //              changeTaskStatus={changeTaskStatus}
+                //              changeTaskTitle={changeTaskTitle}
+                //              todoId={todoId}/>
+                return <TaskWithRedux task={task} todoId={todoId}/>
             })}
         </List>
 

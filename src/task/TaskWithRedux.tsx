@@ -5,29 +5,34 @@ import {EditableSpan} from "../components/EditableSpan/EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
-import {TaskType} from "../state/tasks-reducer";
+import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, TaskType} from "../state/tasks-reducer";
+import {useDispatch} from "react-redux";
 
 export type TaskPropsType = {
     task: TaskType
-    removeTask: (taskId: string, todoId: string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean, todoId: string) => void
-    changeTaskTitle: (title: string, taskId: string, todoId: string) => void
     todoId: string
 }
 
-export const Task = memo(({task, removeTask, changeTaskStatus, changeTaskTitle, todoId}: TaskPropsType) => {
-    console.log('Task')
+export const TaskWithRedux = memo(({task, todoId}: TaskPropsType) => {
+    console.log('TaskWithRedux')
+    const dispatch = useDispatch()
     const removeTaskHandler = () => {
-        removeTask(task.id, todoId)
+        // removeTask(task.id, todoId)
+        const action = removeTaskAC(task.id, todoId)
+        dispatch(action)
     }
 
     const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const newStatusValue = e.currentTarget.checked
-        changeTaskStatus(task.id, newStatusValue, todoId)
+        // changeTaskStatus(task.id, newStatusValue, todoId)
+        const action = changeTaskStatusAC(task.id, newStatusValue, todoId)
+        dispatch(action)
     }
 
     const changeTaskTitleHandler = (title: string) => {
-        changeTaskTitle(title, task.id, todoId)
+        // changeTaskTitle(title, task.id, todoId)
+        const action = changeTaskTitleAC(title, task.id, todoId)
+        dispatch(action)
     }
 
     return (

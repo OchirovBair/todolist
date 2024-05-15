@@ -23,7 +23,7 @@ beforeEach(()=> {
 
 })
 test('todolist #1 should change title to "New title"', ()=> {
-    const endState = todolistsReducer(startState, changeTodolistTitleAC(todolistId1, 'New title'))
+    const endState = todolistsReducer(startState, changeTodolistTitleAC('New title', todolistId1))
 
     expect(endState.length).toBe(2)
     expect(endState[0].title).toBe('New title')
