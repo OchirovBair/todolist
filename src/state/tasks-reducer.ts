@@ -82,3 +82,10 @@ export const removeTaskAC = (taskId: string, todolistId: string) => {
 export const changeTaskStatusAC = (taskId:string,taskStatus: boolean, todolistId:string) => {
     return {type: "CHANGE-TASK-STATUS", payload: {taskStatus, taskId, todolistId}} as const
 }
+
+
+
+
+
+
+

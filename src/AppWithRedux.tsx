@@ -15,14 +15,14 @@ import CssBaseline from '@mui/material/CssBaseline'
 import {
     addTodolistAC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC, removeTodolistAC,
+    changeTodolistTitleAC,
     FilterType,
-    TodolistType
+    removeTodolistAC
 } from "./state/todolists-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "./state/store";
+import {useDispatch} from "react-redux";
 import {Todolist} from "./todolist/Todolist";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, TasksType} from "./state/tasks-reducer";
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
+import {useAppSelector} from "./hooks/hooks";
 
 type ThemeMode = 'dark' | 'light'
 
@@ -45,8 +45,9 @@ function AppWithRedux() {
         setThemeMode(themeMode === 'light' ? 'dark' : 'light')
     }
 
-    const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
-    const tasks = useSelector<AppRootStateType, TasksType>(state => state.tasks)
+    // const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
+    const todolists = useAppSelector(state => state.todolists)
+    const tasks = useAppSelector(state => state.tasks)
     const dispatch = useDispatch();
 
     const removeTask = useCallback((id: string, todolistId: string)=> {
