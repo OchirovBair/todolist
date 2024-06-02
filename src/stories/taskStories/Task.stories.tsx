@@ -4,7 +4,6 @@ import {TaskType} from "../../state/tasks-reducer";
 import {fn} from "@storybook/test";
 import {useState} from "react";
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
     title: 'TODOLIST/Task',
     component: Task,
@@ -24,7 +23,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof Task>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const TaskIsNotDoneStory: Story = {}
 
 export const TaskIsDoneStory: Story = {
