@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 
+
 export type TodolistType = {
     id: string
     title: string
@@ -39,9 +40,10 @@ const settings = {
     baseURL: 'https://social-network.samuraijs.com/api/1.1',
     withCredentials: true,
     headers: {
-        'API-KEY': '4e3dcdf8-b2b8-43c1-9eb7-bf5b3e04a15c'
+        'API-KEY': process.env.REACT_APP_API_KEY
     }
 }
+
 
 const instance = axios.create(settings)
 
