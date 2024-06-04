@@ -5,8 +5,9 @@ import {EditableSpan} from "../components/EditableSpan/EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, TaskType} from "../state/tasks-reducer";
+import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../state/tasks-reducer";
 import {useDispatch} from "react-redux";
+import {TaskStatuses, TaskType} from "../api/todolistsAPI";
 
 export type TaskPropsType = {
     task: TaskType
@@ -14,7 +15,6 @@ export type TaskPropsType = {
 }
 
 export const TaskWithRedux = memo(({task, todoId}: TaskPropsType) => {
-    console.log('TaskWithRedux')
     const dispatch = useDispatch()
     const removeTaskHandler = () => {
         // removeTask(task.id, todoId)
@@ -23,7 +23,8 @@ export const TaskWithRedux = memo(({task, todoId}: TaskPropsType) => {
     }
 
     const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        const newStatusValue = e.currentTarget.checked
+        const booleanStatusValue = e.currentTarget.checked
+        const newStatusValue = booleanStatusValue ? TaskStatuses.Completed : TaskStatuses.New
         // changeTaskStatus(task.id, newStatusValue, todoId)
         const action = changeTaskStatusAC(task.id, newStatusValue, todoId)
         dispatch(action)
@@ -38,9 +39,9 @@ export const TaskWithRedux = memo(({task, todoId}: TaskPropsType) => {
     return (
         <ListItem disableGutters
                   disablePadding
-                  sx={getListItemSx(task.isDone)}>
+                  sx={getListItemSx(task.status)}>
             <div>
-                <Checkbox checked={task.isDone} onChange={changeTaskStatusHandler}/>
+                <Checkbox checked={task.status === TaskStatuses.Completed} onChange={changeTaskStatusHandler}/>
                 {/*<input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>*/}
                 <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler}/>
             </div>

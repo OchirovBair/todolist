@@ -1,18 +1,17 @@
-import React, {ChangeEvent, memo, useCallback, useMemo} from 'react';
-import {FilterType, TaskType} from "../App";
+import React, {memo, useCallback, useEffect, useMemo} from 'react';
+import {FilterType} from "../App";
 import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import {EditableSpan} from "../components/EditableSpan/EditableSpan";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import Box from '@mui/material/Box'
-import {filterButtonsContainerSx, getListItemSx} from "./Todolist.styles";
+import {filterButtonsContainerSx} from "./Todolist.styles";
 import {MiuButton} from "../components/MUIButton/MiuButton";
-import {Task} from "../task/Task";
 import {TaskWithRedux} from "../task/TaskWithRedux";
+import {TaskStatuses, TaskType} from "../api/todolistsAPI";
+import {getTasksTC} from "../state/tasks-reducer";
+import {useAppDispatch} from "../state/store";
 
 
 type TodolistPropsType = {
@@ -21,7 +20,7 @@ type TodolistPropsType = {
     removeTask: (taskId: string, todoId: string) => void
     addTask: (title: string, todoId: string) => void
     changeFilter: (filter: FilterType, todoId: string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean, todoId: string) => void
+    changeTaskStatus: (taskId: string, taskStatus: TaskStatuses, todoId: string) => void
     filter: FilterType
     changeTaskTitle: (title: string, taskId: string, todoId: string) => void
     todoId: string
@@ -34,23 +33,23 @@ export const Todolist = memo(({
                                   tasks,
                                   title,
                                   addTask,
-                                  removeTask,
                                   changeFilter,
-                                  changeTaskStatus,
                                   removeTodolist,
                                   todoId,
                                   filter,
-                                  changeTaskTitle,
                                   changeTodolistTitle
                               }: TodolistPropsType) => {
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(getTasksTC(todoId))
+    }, []);
 
     let tasksMemo = tasks
     tasksMemo = useMemo(() => {
-        console.log('useMemo')
         if (filter === 'active') {
-            tasksMemo = tasksMemo.filter(el => !el.isDone)
+            tasksMemo = tasksMemo.filter(el => el.status === TaskStatuses.New)
         } else if (filter === 'completed') {
-            tasksMemo = tasksMemo.filter(el => el.isDone)
+            tasksMemo = tasksMemo.filter(el => el.status === TaskStatuses.Completed)
         }
         return tasksMemo
     }, [tasks, filter])
@@ -82,13 +81,7 @@ export const Todolist = memo(({
         ? <span>Тасок нет</span>
         : <List>
             {tasksMemo.map(task => {
-                // return <Task key={task.id}
-                //              task={task}
-                //              removeTask={removeTask}
-                //              changeTaskStatus={changeTaskStatus}
-                //              changeTaskTitle={changeTaskTitle}
-                //              todoId={todoId}/>
-                return <TaskWithRedux task={task} todoId={todoId}/>
+                return <TaskWithRedux key={task.id} task={task} todoId={todoId}/>
             })}
         </List>
 

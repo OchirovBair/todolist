@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -16,19 +16,23 @@ import {
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
+    fetchTodolistsTC,
     FilterType,
     removeTodolistAC
 } from "./state/todolists-reducer";
-import {useDispatch} from "react-redux";
 import {Todolist} from "./todolist/Todolist";
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
 import {useAppSelector} from "./hooks/hooks";
+import {TaskStatuses} from "./api/todolistsAPI";
+import {useAppDispatch} from "./state/store";
 
 type ThemeMode = 'dark' | 'light'
 
 
 
 function AppWithRedux() {
+
+
 
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
@@ -45,10 +49,10 @@ function AppWithRedux() {
         setThemeMode(themeMode === 'light' ? 'dark' : 'light')
     }
 
-    // const todolists = useSelector<AppRootStateType, Array<TodolistType>>(state => state.todolists)
     const todolists = useAppSelector(state => state.todolists)
     const tasks = useAppSelector(state => state.tasks)
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
+
 
     const removeTask = useCallback((id: string, todolistId: string)=> {
         const action = removeTaskAC(id, todolistId);
@@ -60,8 +64,8 @@ function AppWithRedux() {
         dispatch(action);
     }, [dispatch])
 
-    const changeStatus = useCallback((id: string, isDone: boolean, todolistId: string) => {
-        const action = changeTaskStatusAC(id, isDone, todolistId);
+    const changeStatus = useCallback((id: string, taskStatus: TaskStatuses, todolistId: string) => {
+        const action = changeTaskStatusAC(id, taskStatus, todolistId);
         dispatch(action);
     }, [dispatch])
 
@@ -89,6 +93,10 @@ function AppWithRedux() {
         const action = addTodolistAC(title);
         dispatch(action);
     }, [dispatch])
+
+    useEffect(() => {
+        dispatch(fetchTodolistsTC())
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>

@@ -1,4 +1,4 @@
-import React, {Reducer, useEffect, useReducer, useState} from 'react';
+import React, {Reducer, useReducer, useState} from 'react';
 import {Todolist} from "./todolist/Todolist";
 import {v1} from "uuid";
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
@@ -16,8 +16,10 @@ import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
 import {
     addTodolistAC,
-    changeTodolistFilterAC, changeTodolistTitleAC,
+    changeTodolistFilterAC,
+    changeTodolistTitleAC,
     removeTodolistAC,
+    TodolistDomainType,
     TodolistsActionType,
     todolistsReducer
 } from "./state/todolists-reducer";
@@ -29,23 +31,12 @@ import {
     TasksActionType,
     tasksReducer
 } from "./state/tasks-reducer";
+import {TaskPriorities, TaskStatuses, TaskType} from "./api/todolistsAPI";
 
 type ThemeMode = 'dark' | 'light'
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
-
 export type TasksType = {
     [key: string]: TaskType[]
-}
-
-export type TodolistType = {
-    id: string
-    title: string
-    filter: FilterType
 }
 
 export type FilterType = 'all' | 'active' | 'completed'
@@ -70,29 +61,27 @@ function AppWithReducers() {
     const todolistId1 = v1()
     const todolistId2 = v1()
 
-    const initialTodolists: TodolistType[] = [
-        {id: todolistId1, title: 'What to learn', filter: 'all'},
-        {id: todolistId2, title: 'What to buy', filter: 'all'},
+    const initialTodolists: TodolistDomainType[] = [
+        {id: todolistId1, title: 'What to learn', filter: 'all', order: 0, addedDate: ''},
+        {id: todolistId2, title: 'What to buy', filter: 'all', order: 0, addedDate: ''},
     ]
 
     const initialtasks: TasksType = {
         [todolistId1]: [
-            {id: v1(), title: 'HTML&CSS', isDone: true},
-            {id: v1(), title: 'JS', isDone: false},
-            {id: v1(), title: 'React', isDone: false},
-            {id: v1(), title: 'Redux', isDone: true},
-            {id: v1(), title: 'TS', isDone: false},
+            {id: v1(), title: 'HTML&CSS', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+            {id: v1(), title: 'JS', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
         ],
         [todolistId2]: [
-            {id: v1(), title: 'milk', isDone: true},
-            {id: v1(), title: 'bread', isDone: false},
-            {id: v1(), title: 'butter', isDone: true},
-            {id: v1(), title: 'juice', isDone: true},
-            {id: v1(), title: 'ice cream', isDone: false},
+            {id: v1(), title: 'butter', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+            {id: v1(), title: 'juice', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
         ],
     }
 
-    const [todolists, dispatchTodolists] = useReducer<Reducer<TodolistType[], TodolistsActionType>>(todolistsReducer, initialTodolists)
+    const [todolists, dispatchTodolists] = useReducer<Reducer<TodolistDomainType[], TodolistsActionType>>(todolistsReducer, initialTodolists)
     const [tasks, dispatchtTasks] = useReducer<Reducer<TasksType, TasksActionType>>(tasksReducer, initialtasks)
 
     const addTask = (title: string, todoId: string) => {
@@ -105,7 +94,7 @@ function AppWithReducers() {
         dispatchtTasks(action)
     }
 
-    const changeTaskStatus = (taskId: string, taskStatus: boolean, todoId: string) => {
+    const changeTaskStatus = (taskId: string, taskStatus: TaskStatuses, todoId: string) => {
         const action = changeTaskStatusAC(taskId, taskStatus,todoId)
         dispatchtTasks(action)
     }
