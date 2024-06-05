@@ -31,7 +31,7 @@ test('todolist #1 should change title to "New title"', ()=> {
 
 
 test('start state should has one more todolist after action', ()=> {
-    const endState = todolistsReducer(startState, addTodolistAC('New todolist'))
+    const endState = todolistsReducer(startState, addTodolistAC({id: v1(), title: 'New todolist', addedDate: '', order: 0}))
 
     expect(endState.length).toBe(3)
     expect(endState[0].title).toBe('New todolist')

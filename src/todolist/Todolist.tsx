@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useEffect, useMemo} from 'react';
-import {FilterType} from "../App";
+import {FilterType} from "../trash/AppUseState";
 import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import {EditableSpan} from "../components/EditableSpan/EditableSpan";
 import IconButton from '@mui/material/IconButton';
@@ -8,10 +8,10 @@ import List from '@mui/material/List'
 import Box from '@mui/material/Box'
 import {filterButtonsContainerSx} from "./Todolist.styles";
 import {MiuButton} from "../components/MUIButton/MiuButton";
-import {TaskWithRedux} from "../task/TaskWithRedux";
+import {Task} from "./task/Task";
 import {TaskStatuses, TaskType} from "../api/todolistsAPI";
 import {getTasksTC} from "../state/tasks-reducer";
-import {useAppDispatch} from "../state/store";
+import {useAppDispatch} from "../hooks/hooks";
 
 
 type TodolistPropsType = {
@@ -81,7 +81,7 @@ export const Todolist = memo(({
         ? <span>Тасок нет</span>
         : <List>
             {tasksMemo.map(task => {
-                return <TaskWithRedux key={task.id} task={task} todoId={todoId}/>
+                return <Task key={task.id} task={task} todoId={todoId}/>
             })}
         </List>
 

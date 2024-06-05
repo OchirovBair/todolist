@@ -1,7 +1,7 @@
 import React, {Reducer, useReducer, useState} from 'react';
-import {Todolist} from "./todolist/Todolist";
+import {Todolist} from "../todolist/Todolist";
 import {v1} from "uuid";
-import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -10,7 +10,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import {toolBarSx} from "./App.styles";
-import {MenuButton} from "./components/MenuBotton/MenuBotton";
+import {MenuButton} from "../components/MenuBotton/MenuBotton";
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -22,16 +22,15 @@ import {
     TodolistDomainType,
     TodolistsActionType,
     todolistsReducer
-} from "./state/todolists-reducer";
+} from "../state/todolists-reducer";
 import {
     addTaskAC,
-    changeTaskStatusAC,
-    changeTaskTitleAC,
+    updateTaskAC,
     removeTaskAC,
     TasksActionType,
     tasksReducer
-} from "./state/tasks-reducer";
-import {TaskPriorities, TaskStatuses, TaskType} from "./api/todolistsAPI";
+} from "../state/tasks-reducer";
+import {TaskPriorities, TaskStatuses, TaskType} from "../api/todolistsAPI";
 
 type ThemeMode = 'dark' | 'light'
 
@@ -85,7 +84,8 @@ function AppWithReducers() {
     const [tasks, dispatchtTasks] = useReducer<Reducer<TasksType, TasksActionType>>(tasksReducer, initialtasks)
 
     const addTask = (title: string, todoId: string) => {
-        const action = addTaskAC(todoId, title)
+        const action = addTaskAC({id: v1(), title: title, status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+            todoListId: todoId, startDate: '', description: '', priority: TaskPriorities.Low})
         dispatchtTasks(action)
     }
 
@@ -95,12 +95,12 @@ function AppWithReducers() {
     }
 
     const changeTaskStatus = (taskId: string, taskStatus: TaskStatuses, todoId: string) => {
-        const action = changeTaskStatusAC(taskId, taskStatus,todoId)
+        const action = updateTaskAC(taskId, {status: taskStatus},todoId)
         dispatchtTasks(action)
     }
 
     const changeTaskTitle = (title: string, taskId: string, todoId: string) => {
-        const action = changeTaskTitleAC(todoId, taskId, title)
+        const action = updateTaskAC(taskId, {title},todoId )
         dispatchtTasks(action)
     }
 
@@ -111,7 +111,7 @@ function AppWithReducers() {
     }
 
     const addTodolist = (title: string) => {
-        const action = addTodolistAC(title)
+        const action = addTodolistAC({id: v1(), title: title, addedDate: '', order: 0})
         dispatchtTasks(action)
         dispatchTodolists(action)
     }

@@ -1,4 +1,4 @@
-import {todolistsAPI} from "../../api/todolistsAPI";
+import {TaskPriorities, TaskStatuses, todolistsAPI, UpdateTaskResponseType} from "../../api/todolistsAPI";
 import {useEffect, useState} from "react";
 
 
@@ -14,7 +14,7 @@ export default meta;
 
 export const GetTasks = () => {
     const [state, setState] = useState<any>()
-    const todolistId = 'fa41ee56-4716-488d-ad9b-0f27923734bc'
+    const todolistId = 'e325fc8d-4761-45ee-96c3-548578b0e892'
 
     useEffect(() => {
        todolistsAPI.getTasks(todolistId)
@@ -36,7 +36,7 @@ export const CreateTask = () => {
     const todolistId = 'fa41ee56-4716-488d-ad9b-0f27923734bc'
 
     useEffect(() => {
-       todolistsAPI.createTask(todolistId,'New Task')
+       todolistsAPI.createTask(todolistId,'New TaskUseStateOrReducer')
             .then(res => {
                 setState((res.data.data.item))
         })
@@ -55,7 +55,7 @@ export const DeleteTask = () => {
     const todolistId = 'fa41ee56-4716-488d-ad9b-0f27923734bc'
     const taskId = '09d83649-e83a-4a95-ab5e-bba7571395e4'
     useEffect(() => {
-       todolistsAPI.deleteTask(todolistId, taskId)
+       todolistsAPI.removeTask(todolistId, taskId)
             .then(res => {
                 console.log(res.data)
                 setState((res.data))
@@ -76,7 +76,15 @@ export const ChangeTaskTitle = () => {
     const taskId = '4016340a-ee84-4be8-b792-82945ac3979d'
 
     useEffect(() => {
-       todolistsAPI.changeTaskTitle(todolistId, taskId,'new Title 2')
+        const model: UpdateTaskResponseType = {
+            title: 'new Title 2',
+            deadline: '',
+            description: '',
+            priority: TaskPriorities.Low,
+            status: TaskStatuses.New,
+            startDate: ''
+        }
+       todolistsAPI.updateTask(todolistId, taskId, model)
             .then(res => {
                 console.log(res.data)
                 setState((res.data.data.item))

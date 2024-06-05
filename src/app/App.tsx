@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -7,33 +7,29 @@ import MenuIcon from '@mui/icons-material/Menu'
 import Grid from '@mui/material/Unstable_Grid2'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
-import {toolBarSx} from "./App.styles";
-import {MenuButton} from "./components/MenuBotton/MenuBotton";
+import {toolBarSx} from "../trash/App.styles";
+import {MenuButton} from "../components/MenuBotton/MenuBotton";
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
 import {
-    addTodolistAC,
+    addTodolistTC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC,
-    fetchTodolistsTC,
+    changeTodolistTitleTC,
     FilterType,
-    removeTodolistAC
-} from "./state/todolists-reducer";
-import {Todolist} from "./todolist/Todolist";
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "./state/tasks-reducer";
-import {useAppSelector} from "./hooks/hooks";
-import {TaskStatuses} from "./api/todolistsAPI";
-import {useAppDispatch} from "./state/store";
+    getTodolistsTC,
+    removeTodolistTC
+} from "../state/todolists-reducer";
+import {Todolist} from "../todolist/Todolist";
+import {addTaskTC, removeTaskAC, removeTaskTC, updateTaskAC} from "../state/tasks-reducer";
+import {useAppDispatch, useAppSelector} from "../hooks/hooks";
+import {TaskStatuses} from "../api/todolistsAPI";
 
 type ThemeMode = 'dark' | 'light'
 
 
 
-function AppWithRedux() {
-
-
-
+function App() {
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
     const theme = createTheme({
@@ -56,21 +52,21 @@ function AppWithRedux() {
 
     const removeTask = useCallback((id: string, todolistId: string)=> {
         const action = removeTaskAC(id, todolistId);
-        dispatch(action);
+        dispatch(removeTaskTC(todolistId, id));
     }, [dispatch])
 
     const addTask = useCallback((title: string, todolistId: string) => {
-        const action = addTaskAC(title, todolistId);
-        dispatch(action);
+        // const action = addTaskAC(title, todolistId);
+        dispatch(addTaskTC(todolistId, title));
     }, [dispatch])
 
     const changeStatus = useCallback((id: string, taskStatus: TaskStatuses, todolistId: string) => {
-        const action = changeTaskStatusAC(id, taskStatus, todolistId);
+        const action = updateTaskAC(id, {status: taskStatus}, todolistId);
         dispatch(action);
     }, [dispatch])
 
     const changeTaskTitle = useCallback((id: string, newTitle: string, todolistId: string)=> {
-        const action = changeTaskTitleAC(id, newTitle, todolistId);
+        const action = updateTaskAC(id, {title: newTitle}, todolistId);
         dispatch(action);
     }, [dispatch])
 
@@ -80,22 +76,22 @@ function AppWithRedux() {
     }, [dispatch])
 
     const removeTodolist = useCallback((id: string)=> {
-        const action = removeTodolistAC(id);
-        dispatch(action);
+        // const action = removeTodolistAC(id);
+        dispatch(removeTodolistTC(id));
     }, [dispatch])
 
     const changeTodolistTitle = useCallback((id: string, title: string) => {
-        const action = changeTodolistTitleAC(id, title);
-        dispatch(action);
+        // const action = changeTodolistTitleAC(id, title);
+        dispatch(changeTodolistTitleTC(title, id));
     }, [dispatch])
 
     const addTodolist = useCallback((title: string) => {
-        const action = addTodolistAC(title);
-        dispatch(action);
+        // const action = addTodolistAC(title);
+        dispatch(addTodolistTC(title));
     }, [dispatch])
 
     useEffect(() => {
-        dispatch(fetchTodolistsTC())
+        dispatch(getTodolistsTC())
     }, []);
 
     return (
@@ -147,4 +143,4 @@ function AppWithRedux() {
     );
 }
 
-export default AppWithRedux;
+export default App;

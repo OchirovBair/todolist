@@ -1,12 +1,12 @@
 import type {Meta, StoryObj} from '@storybook/react';
-import {Task} from "../../task/Task";
+import {TaskUseStateOrReducer} from "../../trash/TaskUseStateOrReducer";
 import {fn} from "@storybook/test";
 import {useState} from "react";
 import {TaskPriorities, TaskStatuses} from "../../api/todolistsAPI";
 
 const meta = {
-    title: 'TODOLIST/Task',
-    component: Task,
+    title: 'TODOLIST/TaskUseStateOrReducer',
+    component: TaskUseStateOrReducer,
     parameters: {
         layout: 'centered',
     },
@@ -19,10 +19,10 @@ const meta = {
         changeTaskTitle: fn(),
         todoId: 'aaa'
     }
-} satisfies Meta<typeof Task>;
+} satisfies Meta<typeof TaskUseStateOrReducer>;
 
 export default meta;
-type Story = StoryObj<typeof Task>;
+type Story = StoryObj<typeof TaskUseStateOrReducer>;
 
 export const TaskIsNotDoneStory: Story = {}
 
@@ -46,7 +46,7 @@ export const TaskToggleStory: Story = {
             setTask({...task, title: title})
         }
 
-        return <Task
+        return <TaskUseStateOrReducer
             task={task}
             removeTask={args.removeTask}
             changeTaskStatus={changeTaskStatus}

@@ -1,6 +1,6 @@
 import {v1} from "uuid";
-import {TasksType} from "../../App";
-import {tasksReducer, todolistId1, todolistId2} from "../tasks-reducer";
+import {TasksType} from "../../trash/AppUseState";
+import {tasksReducer} from "../tasks-reducer";
 import {
     addTodolistAC,
     removeTodolistAC,
@@ -10,11 +10,15 @@ import {
 } from "../todolists-reducer";
 import {TaskPriorities, TaskStatuses} from "../../api/todolistsAPI";
 
+
+const todolistId1 = v1()
+const todolistId2 = v1()
+
 test('after adding new todolist should added empty array of tasks', () => {
     const startTasksState: TasksType = {};
     const startTodolistsState: Array<TodolistDomainType> = [];
 
-    const action = addTodolistAC("new todolist");
+    const action = addTodolistAC({id: v1(), title: 'new todolist', addedDate: '', order: 0});
 
     const endTasksState = tasksReducer(startTasksState, action)
     const endTodolistsState = todolistsReducer(startTodolistsState, action)
@@ -23,8 +27,8 @@ test('after adding new todolist should added empty array of tasks', () => {
     const idFromTasks = keys[0];
     const idFromTodolists = endTodolistsState[0].id;
 
-    expect(idFromTasks).toBe(action.payload.todolistId);
-    expect(idFromTodolists).toBe(action.payload.todolistId);
+    expect(idFromTasks).toBe(action.payload.todolist.id);
+    expect(idFromTodolists).toBe(action.payload.todolist.id);
 });
 
 test('after deleting todolist with id=todolistId1, array of tasks with key=todolistId1 should be deleted', () => {

@@ -1,9 +1,8 @@
 import {v1} from "uuid";
-import {TasksType} from "../../App";
+import {TasksType} from "../../trash/AppUseState";
 import {
     addTaskAC,
-    changeTaskStatusAC,
-    changeTaskTitleAC,
+    updateTaskAC,
     removeTaskAC,
     setTasksAC,
     tasksReducer
@@ -55,7 +54,8 @@ test('correct task should be deleted from correct array', () => {
 })
 
 test('correct task should be added to correct array', () => {
-    const action = addTaskAC("juice", todolistId2);
+    const action = addTaskAC({id: v1(), title: 'juice', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+        todoListId: todolistId2, startDate: '', description: '', priority: TaskPriorities.Low});
 
     const endState = tasksReducer(startState, action)
 
@@ -63,11 +63,10 @@ test('correct task should be added to correct array', () => {
     expect(endState[todolistId2].length).toBe(3);
     expect(endState[todolistId2][0].id).toBeDefined();
     expect(endState[todolistId2][0].title).toBe('juice');
-    expect(endState[todolistId2][0].status).toBe(TaskStatuses.New);
 })
 
 test('status of specified task should be changed', () => {
-    const action = changeTaskStatusAC("2", TaskStatuses.New, todolistId2);
+    const action = updateTaskAC("2", {status: TaskStatuses.New}, todolistId2);
 
     const endState = tasksReducer(startState, action)
 
@@ -75,7 +74,7 @@ test('status of specified task should be changed', () => {
 });
 
 test('title of specified task should be changed', () => {
-    const action = changeTaskTitleAC('onion', "2", todolistId2);
+    const action = updateTaskAC('2', {title: "onion"}, todolistId2);
 
     const endState = tasksReducer(startState, action)
 

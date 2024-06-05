@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Todolist} from "./todolist/Todolist";
+import {Todolist} from "../todolist/Todolist";
 import {v1} from "uuid";
-import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -10,12 +10,12 @@ import Grid from '@mui/material/Unstable_Grid2'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import {toolBarSx} from "./App.styles";
-import {MenuButton} from "./components/MenuBotton/MenuBotton";
+import {MenuButton} from "../components/MenuBotton/MenuBotton";
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
-import {TaskPriorities, TaskStatuses, TaskType} from "./api/todolistsAPI";
-import {TodolistDomainType} from "./state/todolists-reducer";
+import {TaskPriorities, TaskStatuses, TaskType} from "../api/todolistsAPI";
+import {TodolistDomainType} from "../state/todolists-reducer";
 
 type ThemeMode = 'dark' | 'light'
 
@@ -25,7 +25,7 @@ export type TasksType = {
 
 export type FilterType = 'all' | 'active' | 'completed'
 
-function App() {
+function AppUseState() {
 
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
@@ -158,4 +158,4 @@ function App() {
     );
 }
 
-export default App;
+export default AppUseState;
