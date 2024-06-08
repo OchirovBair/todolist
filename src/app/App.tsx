@@ -21,12 +21,16 @@ import {
     removeTodolistTC
 } from "../state/todolists-reducer";
 import {Todolist} from "../todolist/Todolist";
-import {addTaskTC, removeTaskAC, removeTaskTC, updateTaskAC} from "../state/tasks-reducer";
+import {addTaskTC, removeTaskTC, updateTaskAC} from "../state/tasks-reducer";
 import {useAppDispatch, useAppSelector} from "../hooks/hooks";
 import {TaskStatuses} from "../api/todolistsAPI";
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import {selectors} from "../state/selectors";
+import {CustomizedSnackbars} from "../components/CustomizeSnakbar/CastomizeSnakbar";
+
 
 type ThemeMode = 'dark' | 'light'
-
 
 
 function App() {
@@ -45,48 +49,43 @@ function App() {
         setThemeMode(themeMode === 'light' ? 'dark' : 'light')
     }
 
-    const todolists = useAppSelector(state => state.todolists)
-    const tasks = useAppSelector(state => state.tasks)
+    const todolists = useAppSelector(selectors.getTodolistsSelector)
+    const tasks = useAppSelector(selectors.getTasksSelector)
+    const status = useAppSelector(selectors.getStatusSelector)
+
+
     const dispatch = useAppDispatch();
 
 
-    const removeTask = useCallback((id: string, todolistId: string)=> {
-        const action = removeTaskAC(id, todolistId);
+    const removeTask = useCallback((id: string, todolistId: string) => {
         dispatch(removeTaskTC(todolistId, id));
     }, [dispatch])
 
     const addTask = useCallback((title: string, todolistId: string) => {
-        // const action = addTaskAC(title, todolistId);
         dispatch(addTaskTC(todolistId, title));
     }, [dispatch])
 
     const changeStatus = useCallback((id: string, taskStatus: TaskStatuses, todolistId: string) => {
-        const action = updateTaskAC(id, {status: taskStatus}, todolistId);
-        dispatch(action);
+        dispatch(updateTaskAC(id, {status: taskStatus}, todolistId));
     }, [dispatch])
 
-    const changeTaskTitle = useCallback((id: string, newTitle: string, todolistId: string)=> {
-        const action = updateTaskAC(id, {title: newTitle}, todolistId);
-        dispatch(action);
+    const changeTaskTitle = useCallback((id: string, newTitle: string, todolistId: string) => {
+        dispatch(updateTaskAC(id, {title: newTitle}, todolistId));
     }, [dispatch])
 
-    const changeFilter = useCallback((value: FilterType, todolistId: string)=> {
-        const action = changeTodolistFilterAC(value, todolistId);
-        dispatch(action);
+    const changeFilter = useCallback((value: FilterType, todolistId: string) => {
+        dispatch(changeTodolistFilterAC(value, todolistId));
     }, [dispatch])
 
-    const removeTodolist = useCallback((id: string)=> {
-        // const action = removeTodolistAC(id);
+    const removeTodolist = useCallback((id: string) => {
         dispatch(removeTodolistTC(id));
     }, [dispatch])
 
     const changeTodolistTitle = useCallback((id: string, title: string) => {
-        // const action = changeTodolistTitleAC(id, title);
         dispatch(changeTodolistTitleTC(title, id));
     }, [dispatch])
 
     const addTodolist = useCallback((title: string) => {
-        // const action = addTodolistAC(title);
         dispatch(addTodolistTC(title));
     }, [dispatch])
 
@@ -96,6 +95,7 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
+            <CustomizedSnackbars/>
             <CssBaseline/>
             <AppBar position="static" sx={{mb: '30px'}}>
                 <Toolbar sx={toolBarSx}>
@@ -109,6 +109,9 @@ function App() {
                         <Switch color={'default'} onChange={changeThemeMode}/>
                     </div>
                 </Toolbar>
+                <Box sx={{width: '100%', height: '2px'}}>
+                    {status === 'loading' && <LinearProgress/>}
+                </Box>
             </AppBar>
             <Container fixed>
                 <Grid container sx={{mb: '30px'}}>
@@ -131,6 +134,7 @@ function App() {
                                         removeTodolist={removeTodolist}
                                         changeTaskTitle={changeTaskTitle}
                                         changeTodolistTitle={changeTodolistTitle}
+                                        entityStatus={tl.entityStatus}
                                     />
                                 </Paper>
                             </Grid>
@@ -138,9 +142,8 @@ function App() {
                     }
                 </Grid>
             </Container>
-
         </ThemeProvider>
-    );
+    )
 }
 
 export default App;

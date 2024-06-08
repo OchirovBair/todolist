@@ -13,22 +13,26 @@ const rootReducer = combineReducers({
 
 const initialGlobalState:AppRootStateType = {
     todolists: [
-        {id: 'todolistId1', title: 'What to learn', filter: 'all', addedDate: '', order: 0},
-        {id: 'todolistId2', title: 'What to buy', filter: 'all', addedDate: '', order: 0},
+        {id: 'todolistId1', title: 'What to learn', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
+        {id: 'todolistId2', title: 'What to buy', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
     ] ,
     tasks: {
         ["todolistId1"]: [
             {id: v1(), title: "HTML&CSS", status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
-                todoListId: 'todolistId1', startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: 'todolistId1', startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
             {id: v1(), title: "JS", status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
-                todoListId: 'todolistId1', startDate: '', description: '', priority: TaskPriorities.Low}
+                todoListId: 'todolistId1', startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'}
         ],
         ["todolistId2"]: [
             {id: v1(), title: "Milk", status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
-                todoListId: 'todolistId2', startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: 'todolistId2', startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
             {id: v1(), title: "React Book", status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
-                todoListId: 'todolistId2', startDate: '', description: '', priority: TaskPriorities.Low}
+                todoListId: 'todolistId2', startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'}
         ]
+    },
+    app: {
+        status: "idle",
+        error: null
     }
 };
 

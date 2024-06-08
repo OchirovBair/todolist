@@ -9,13 +9,14 @@ import Box from '@mui/material/Box'
 import {filterButtonsContainerSx} from "./Todolist.styles";
 import {MiuButton} from "../components/MUIButton/MiuButton";
 import {Task} from "./task/Task";
-import {TaskStatuses, TaskType} from "../api/todolistsAPI";
-import {getTasksTC} from "../state/tasks-reducer";
+import {TaskStatuses} from "../api/todolistsAPI";
+import {DomainTaskType, getTasksTC} from "../state/tasks-reducer";
 import {useAppDispatch} from "../hooks/hooks";
+import {RequestStatusType} from "../state/app-reducer";
 
 
 type TodolistPropsType = {
-    tasks: TaskType[]
+    tasks: DomainTaskType[]
     title: string
     removeTask: (taskId: string, todoId: string) => void
     addTask: (title: string, todoId: string) => void
@@ -24,6 +25,7 @@ type TodolistPropsType = {
     filter: FilterType
     changeTaskTitle: (title: string, taskId: string, todoId: string) => void
     todoId: string
+    entityStatus: RequestStatusType
 
     changeTodolistTitle: (title: string, todoId: string) => void
     removeTodolist: (todoId: string) => void
@@ -37,7 +39,8 @@ export const Todolist = memo(({
                                   removeTodolist,
                                   todoId,
                                   filter,
-                                  changeTodolistTitle
+                                  changeTodolistTitle,
+                                  entityStatus
                               }: TodolistPropsType) => {
     const dispatch = useAppDispatch()
     useEffect(() => {
@@ -93,7 +96,7 @@ export const Todolist = memo(({
                     <DeleteIcon/>
                 </IconButton>
             </h3>
-            <AddItemForm addItem={addTaskHandler}/>
+            <AddItemForm addItem={addTaskHandler} disabled={entityStatus === 'loading'}/>
             {taskList}
             <Box sx={filterButtonsContainerSx}>
                 <MiuButton onClick={changeTodolistFilterHandlerAll}

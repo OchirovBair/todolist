@@ -36,13 +36,13 @@ export enum TaskPriorities {
     Urgently = 3,
     Later = 4
 }
-type ResponseType<T={}> = {
+export type ResponseType<T={}> = {
     data: T
     messages: Array<string>
     fieldsErrors: Array<string>
     resultCode: number
 }
-type GetTasksResponseType = {
+export type GetTasksResponseType = {
     error: string | null
     items: TaskType[]
     totalCount: number

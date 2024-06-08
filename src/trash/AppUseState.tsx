@@ -14,14 +14,12 @@ import {MenuButton} from "../components/MenuBotton/MenuBotton";
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
-import {TaskPriorities, TaskStatuses, TaskType} from "../api/todolistsAPI";
+import {TaskPriorities, TaskStatuses} from "../api/todolistsAPI";
 import {TodolistDomainType} from "../state/todolists-reducer";
+import {DomainTaskType, TasksType} from "../state/tasks-reducer";
 
 type ThemeMode = 'dark' | 'light'
 
-export type TasksType = {
-    [key: string]: TaskType[]
-}
 
 export type FilterType = 'all' | 'active' | 'completed'
 
@@ -46,22 +44,22 @@ function AppUseState() {
     const todolistId2 = v1()
 
     const initialTodolists: TodolistDomainType[] = [
-        {id: todolistId1, title: 'What to learn', filter: 'all', addedDate: '', order: 0},
-        {id: todolistId2, title: 'What to buy', filter: 'all', addedDate: '', order: 0},
+        {id: todolistId1, title: 'What to learn', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
+        {id: todolistId2, title: 'What to buy', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
     ]
 
     const initialtasks: TasksType = {
         [todolistId1]: [
             {id: v1(), title: 'HTML&CSS', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
-                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
             {id: v1(), title: 'JS', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
-                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
         ],
         [todolistId2]: [
             {id: v1(), title: 'butter', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
-                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
             {id: v1(), title: 'juice', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
-                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low},
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
         ],
     }
 
@@ -69,8 +67,8 @@ function AppUseState() {
     const [tasks, setTasks] = useState<TasksType>(initialtasks)
 
     const addTask = (title: string, todoId: string) => {
-        const newTask = {id: v1(), title, status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
-            todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low}
+        const newTask:DomainTaskType = {id: v1(), title, status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+            todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'}
         setTasks({...tasks, [todoId]: [newTask, ...tasks[todoId]]})
     }
 
@@ -94,7 +92,7 @@ function AppUseState() {
 
     const addTodolist = (title: string) => {
         const newTodolistId = v1()
-        const newTodolist: TodolistDomainType = {id: newTodolistId, title, filter: 'all', addedDate: '', order: 0}
+        const newTodolist: TodolistDomainType = {id: newTodolistId, title, filter: 'all', addedDate: '', order: 0, entityStatus: "idle"}
         setTodolists([newTodolist, ...todolists])
         setTasks({...tasks, [newTodolistId]: []})
     }
@@ -144,7 +142,7 @@ function AppUseState() {
                                               changeFilter={changeFilter}
                                               filter={td.filter}
                                               changeTaskTitle={changeTaskTitle}
-
+                                              entityStatus={td.entityStatus}
                                               removeTodolist={deleteTodolist}
                                               changeTodolistTitle={changeTodolistTitle}/>
                                 </Paper>

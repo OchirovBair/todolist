@@ -5,12 +5,12 @@ import {EditableSpan} from "../../components/EditableSpan/EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
-import {removeTaskTC, updateTaskTC} from "../../state/tasks-reducer";
-import {TaskStatuses, TaskType} from "../../api/todolistsAPI";
+import {DomainTaskType, removeTaskTC, updateTaskTC} from "../../state/tasks-reducer";
+import {TaskStatuses} from "../../api/todolistsAPI";
 import {useAppDispatch} from "../../hooks/hooks";
 
 export type TaskPropsType = {
-    task: TaskType
+    task: DomainTaskType
     todoId: string
 }
 
@@ -35,9 +35,9 @@ export const Task = memo(({task, todoId}: TaskPropsType) => {
                   disablePadding
                   sx={getListItemSx(task.status)}>
             <div>
-                <Checkbox checked={task.status === TaskStatuses.Completed} onChange={changeTaskStatusHandler}/>
+                <Checkbox checked={task.status === TaskStatuses.Completed} onChange={changeTaskStatusHandler} disabled={task.entityStatus === 'loading'}/>
                 {/*<input type="checkbox" checked={task.isDone} onChange={changeTaskStatusHandler}/>*/}
-                <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler}/>
+                <EditableSpan title={task.title} changeTitleHandler={changeTaskTitleHandler} disabled={task.entityStatus === 'loading'}/>
             </div>
             <IconButton onClick={removeTaskHandler}>
                 <DeleteIcon/>
