@@ -2,6 +2,7 @@ import {todolistsAPI, TodolistType} from "../api/todolistsAPI";
 import {AppThunk} from "./store";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
+import {AxiosError} from "axios";
 
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
 export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
@@ -96,7 +97,11 @@ export const getTodolistsTC = (): AppThunk => async (dispatch) => {
         dispatch(setTodolistsAC(res.data))
         dispatch(setAppStatusAC('succeeded'))
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
     }
 }
 export const addTodolistTC = (title: string): AppThunk => async (dispatch) => {
@@ -111,7 +116,11 @@ export const addTodolistTC = (title: string): AppThunk => async (dispatch) => {
         }
 
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
     }
 
 }
@@ -126,8 +135,16 @@ export const removeTodolistTC = (todolistId: string): AppThunk => async (dispatc
         } else {
             handleServerAppError(dispatch, res.data)
         }
+        dispatch(setEntityTodolistStatusAC(todolistId, 'idle'))
+
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
+        dispatch(setEntityTodolistStatusAC(todolistId, 'failed'))
+
     }
 }
 export const changeTodolistTitleTC = (todolistId: string, title: string): AppThunk => async (dispatch) => {
@@ -144,7 +161,12 @@ export const changeTodolistTitleTC = (todolistId: string, title: string): AppThu
             handleServerAppError(dispatch, res.data)
         }
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
+        dispatch(setEntityTodolistStatusAC(todolistId, 'failed'))
     }
 }
 

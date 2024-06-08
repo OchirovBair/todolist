@@ -3,6 +3,7 @@ import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskResponse
 import {AppRootStateType, AppThunk} from "./store";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
 import {getTasksHandleServerAppError, handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
+import {AxiosError} from "axios";
 
 export type TasksActionType =
     | ReturnType<typeof addTaskAC>
@@ -94,7 +95,11 @@ export const getTasksTC = (todolistId: string): AppThunk => async (dispatch) => 
             getTasksHandleServerAppError(dispatch, res.data)
         }
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
     }
 
 
@@ -110,7 +115,11 @@ export const addTaskTC = (todolistId: string, title: string): AppThunk => async 
             handleServerAppError(dispatch, res.data)
         }
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
     }
 }
 export const removeTaskTC = (todolistId: string, taskId: string): AppThunk => async (dispatch) => {
@@ -126,7 +135,12 @@ export const removeTaskTC = (todolistId: string, taskId: string): AppThunk => as
         }
         dispatch(updateTaskAC(taskId, {entityStatus: 'idle'}, todolistId))
     } catch (e) {
-        handleServerNetworkError(dispatch, e)
+        if (e instanceof AxiosError) {
+            handleServerNetworkError(dispatch, e);
+        } else {
+            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+        }
+        dispatch(updateTaskAC(taskId, {entityStatus: 'failed'}, todolistId))
     }
 
 }
@@ -157,7 +171,12 @@ export const updateTaskTC = (todolistId: string, taskId: string, domainModel: Up
             }
             dispatch(updateTaskAC(taskId, {entityStatus: 'idle'}, todolistId))
         } catch (e) {
-            handleServerNetworkError(dispatch, e)
+            if (e instanceof AxiosError) {
+                handleServerNetworkError(dispatch, e);
+            } else {
+                handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+            }
+            dispatch(updateTaskAC(taskId, {entityStatus: 'failed'}, todolistId))
         }
     }
 

@@ -20,7 +20,7 @@ export const getTasksHandleServerAppError = (dispatch: AppThunkDispatchType, dat
 
 }
 
-export const handleServerNetworkError = (dispatch: AppThunkDispatchType, error: any) => {
+export const handleServerNetworkError = (dispatch: AppThunkDispatchType, error: {message: string}) => {
     dispatch(setAppErrorAC(error.message))
     dispatch(setAppStatusAC('failed'))
 }
