@@ -1,5 +1,5 @@
 import React, {Reducer, useReducer, useState} from 'react';
-import {Todolist} from "../todolist/Todolist";
+import {Todolist} from "../features/TodolistsList/todolist/Todolist";
 import {v1} from "uuid";
 import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'

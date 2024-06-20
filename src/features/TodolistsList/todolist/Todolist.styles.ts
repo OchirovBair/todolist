@@ -1,5 +1,5 @@
 import {SxProps} from '@mui/material'
-import {TaskStatuses} from "../api/todolistsAPI";
+import {TaskStatuses} from "../../../api/todolistsAPI";
 
 export const filterButtonsContainerSx: SxProps = {
     display: 'flex',

@@ -1,4 +1,9 @@
-import {AddTodolistActionType, RemoveTodolistActionType, SetTodolistActionType} from "./todolists-reducer";
+import {
+    AddTodolistActionType,
+    ClearTodolistsDataActionType,
+    RemoveTodolistActionType,
+    SetTodolistActionType
+} from "./todolists-reducer";
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskResponseType} from "../api/todolistsAPI";
 import {AppRootStateType, AppThunk} from "./store";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
@@ -13,6 +18,7 @@ export type TasksActionType =
     | AddTodolistActionType
     | RemoveTodolistActionType
     | SetTodolistActionType
+    | ClearTodolistsDataActionType
 
 export type DomainTaskType = TaskType & {
     entityStatus: RequestStatusType
@@ -67,6 +73,8 @@ export const tasksReducer = (state: TasksType = {}, action: TasksActionType): Ta
             action.payload.todolists.forEach(todo => allTasks[todo.id] = [])
             return allTasks
         }
+        case "CLEAR-TODOS-DATA":
+            return {}
         default:
             return state
     }
@@ -98,7 +106,7 @@ export const getTasksTC = (todolistId: string): AppThunk => async (dispatch) => 
         if (e instanceof AxiosError) {
             handleServerNetworkError(dispatch, e);
         } else {
-            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+            handleServerNetworkError(dispatch, {message: 'Unknown error occurred'});
         }
     }
 
@@ -118,7 +126,7 @@ export const addTaskTC = (todolistId: string, title: string): AppThunk => async 
         if (e instanceof AxiosError) {
             handleServerNetworkError(dispatch, e);
         } else {
-            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+            handleServerNetworkError(dispatch, {message: 'Unknown error occurred'});
         }
     }
 }
@@ -138,7 +146,7 @@ export const removeTaskTC = (todolistId: string, taskId: string): AppThunk => as
         if (e instanceof AxiosError) {
             handleServerNetworkError(dispatch, e);
         } else {
-            handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+            handleServerNetworkError(dispatch, {message: 'Unknown error occurred'});
         }
         dispatch(updateTaskAC(taskId, {entityStatus: 'failed'}, todolistId))
     }
@@ -174,7 +182,7 @@ export const updateTaskTC = (todolistId: string, taskId: string, domainModel: Up
             if (e instanceof AxiosError) {
                 handleServerNetworkError(dispatch, e);
             } else {
-                handleServerNetworkError(dispatch, { message: 'Unknown error occurred' });
+                handleServerNetworkError(dispatch, {message: 'Unknown error occurred'});
             }
             dispatch(updateTaskAC(taskId, {entityStatus: 'failed'}, todolistId))
         }

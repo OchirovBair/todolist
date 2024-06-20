@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from "axios";
+import {LoginType} from "../features/Login/Login";
 
 
 export type TodolistType = {
@@ -56,7 +57,11 @@ export type UpdateTaskResponseType = {
     startDate: string | null,
     deadline: string | null,
 }
-
+export type  UserType = {
+    id: number
+    email: string
+    login: string
+}
 
 
 const settings = {
@@ -94,5 +99,17 @@ export const todolistsAPI = {
     },
     updateTask(todolistId:string, taskId: string, model: UpdateTaskResponseType) {
         return axiosInstance.put<{}, AxiosResponse<ResponseType<{item: TaskType}>>, UpdateTaskResponseType>(`/todo-lists/${todolistId}/tasks/${taskId}`, model)
+    }
+}
+
+export const authAPI = {
+    login(data: LoginType) {
+        return axiosInstance.post<null, AxiosResponse<ResponseType<{ userId: number }>>, LoginType>('/auth/login', data)
+    },
+    me() {
+        return axiosInstance.get<ResponseType<UserType>>('/auth/me')
+    },
+    logout() {
+        return axiosInstance.delete<ResponseType>('/auth/login')
     }
 }

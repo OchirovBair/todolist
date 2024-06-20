@@ -1,5 +1,5 @@
 import React, {ChangeEvent, memo} from 'react';
-import {getListItemSx} from "../todolist/Todolist.styles";
+import {getListItemSx} from "../features/TodolistsList/todolist/Todolist.styles";
 import Checkbox from "@mui/material/Checkbox";
 import {EditableSpan} from "../components/EditableSpan/EditableSpan";
 import IconButton from "@mui/material/IconButton";

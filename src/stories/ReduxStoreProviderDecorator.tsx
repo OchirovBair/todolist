@@ -12,6 +12,9 @@ const rootReducer = combineReducers({
 })
 
 const initialGlobalState:AppRootStateType = {
+    auth: {
+        isLoggedIn: false
+    },
     todolists: [
         {id: 'todolistId1', title: 'What to learn', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
         {id: 'todolistId2', title: 'What to buy', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
@@ -32,7 +35,8 @@ const initialGlobalState:AppRootStateType = {
     },
     app: {
         status: "idle",
-        error: null
+        error: null,
+        isInitialized: false
     }
 };
 

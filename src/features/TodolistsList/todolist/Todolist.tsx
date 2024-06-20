@@ -1,18 +1,17 @@
-import React, {memo, useCallback, useEffect, useMemo} from 'react';
-import {FilterType} from "../trash/AppUseState";
-import {AddItemForm} from "../components/AddItemForm/AddItemForm";
-import {EditableSpan} from "../components/EditableSpan/EditableSpan";
+import React, {memo, useCallback, useMemo} from 'react';
+import {FilterType} from "../../../trash/AppUseState";
+import {AddItemForm} from "../../../components/AddItemForm/AddItemForm";
+import {EditableSpan} from "../../../components/EditableSpan/EditableSpan";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import List from '@mui/material/List'
 import Box from '@mui/material/Box'
 import {filterButtonsContainerSx} from "./Todolist.styles";
-import {MiuButton} from "../components/MUIButton/MiuButton";
+import {MiuButton} from "../../../components/MUIButton/MiuButton";
 import {Task} from "./task/Task";
-import {TaskStatuses} from "../api/todolistsAPI";
-import {DomainTaskType, getTasksTC} from "../state/tasks-reducer";
-import {useAppDispatch} from "../hooks/hooks";
-import {RequestStatusType} from "../state/app-reducer";
+import {TaskStatuses} from "../../../api/todolistsAPI";
+import {DomainTaskType} from "../../../state/tasks-reducer";
+import {RequestStatusType} from "../../../state/app-reducer";
 
 
 type TodolistPropsType = {
@@ -42,11 +41,6 @@ export const Todolist = memo(({
                                   changeTodolistTitle,
                                   entityStatus
                               }: TodolistPropsType) => {
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        dispatch(getTasksTC(todoId))
-    }, []);
-
     let tasksMemo = tasks
     tasksMemo = useMemo(() => {
         if (filter === 'active') {
