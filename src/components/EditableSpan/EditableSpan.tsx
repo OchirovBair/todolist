@@ -1,24 +1,27 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, memo, useState} from 'react';
 import TextField from "@mui/material/TextField";
 
 type EditableSpanPropsType = {
     title: string
-    changeTitleHandler:(title: string)=>void
+    changeTitleHandler: (title: string) => void
+    disabled?: boolean
 }
 
-export const EditableSpan = ({title, changeTitleHandler}: EditableSpanPropsType) => {
+export const EditableSpan = memo(({title, changeTitleHandler, disabled}: EditableSpanPropsType) => {
     const [isEdit, setIsEdit] = useState(false)
-    const [inputValue,setInputValue] = useState(title)
+    const [inputValue, setInputValue] = useState(title)
 
     const onDoubleClickHandler = () => {
-        setIsEdit(true)
+        if (!disabled) {
+            setIsEdit(true)
+        }
     }
     const onBlurInputHandler = () => {
         setIsEdit(false)
         changeTitleHandler(inputValue.trim())
     }
 
-    const onChangeInputHandler = (e:ChangeEvent<HTMLInputElement>) => {
+    const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.currentTarget.value)
     }
 
@@ -33,7 +36,7 @@ export const EditableSpan = ({title, changeTitleHandler}: EditableSpanPropsType)
                              autoFocus
                              size={'small'}
                              value={inputValue}/>
-                : <span onDoubleClick={onDoubleClickHandler}>{title}</span>}
+                : <span onDoubleClick={onDoubleClickHandler} style={disabled ? {opacity: .5} : {}}>{title}</span>}
         </>
     );
-};
+})

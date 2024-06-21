@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, memo, useState} from 'react';
 import TextField from '@mui/material/TextField';
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import IconButton from '@mui/material/IconButton'
@@ -6,9 +6,10 @@ import IconButton from '@mui/material/IconButton'
 
 type AddItemFormPropsType = {
     addItem: (title: string) => void
+    disabled?: boolean
 }
 
-export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
+export const AddItemForm = memo(({addItem, disabled}: AddItemFormPropsType) => {
     const [value, setValue] = useState('')
     const [error, setError] = useState(false)
 
@@ -43,11 +44,12 @@ export const AddItemForm = ({addItem}: AddItemFormPropsType) => {
                            error={error}
                            helperText={error ? 'Ошибка ввода' : ''}
                            value={value}
+                           disabled={disabled}
                            size={'small'}/>
-                <IconButton onClick={buttonHandler} color={'primary'} disabled={error}>
+                <IconButton onClick={buttonHandler} color={'primary'} disabled={error || disabled}>
                     <AddBoxIcon/>
                 </IconButton>
             </div>
         </div>
     );
-};
+});

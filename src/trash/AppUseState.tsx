@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Todolist} from "./todolist/Todolist";
+import {Todolist} from "../features/TodolistsList/todolist/Todolist";
 import {v1} from "uuid";
-import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AddItemForm} from "../components/AddItemForm/AddItemForm";
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -10,32 +10,20 @@ import Grid from '@mui/material/Unstable_Grid2'
 import Container from '@mui/material/Container'
 import Paper from '@mui/material/Paper'
 import {toolBarSx} from "./App.styles";
-import {MenuButton} from "./components/MenuBotton/MenuBotton";
+import {MenuButton} from "../components/MenuBotton/MenuBotton";
 import {createTheme, ThemeProvider} from '@mui/material/styles'
 import Switch from '@mui/material/Switch'
 import CssBaseline from '@mui/material/CssBaseline'
+import {TaskPriorities, TaskStatuses} from "../api/todolistsAPI";
+import {TodolistDomainType} from "../state/todolists-reducer";
+import {DomainTaskType, TasksType} from "../state/tasks-reducer";
 
 type ThemeMode = 'dark' | 'light'
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
-
-export type TasksType = {
-    [key: string]: TaskType[]
-}
-
-export type TodolistType = {
-    id: string
-    title: string
-    filter: FilterType
-}
 
 export type FilterType = 'all' | 'active' | 'completed'
 
-function App() {
+function AppUseState() {
 
     const [themeMode, setThemeMode] = useState<ThemeMode>('light')
 
@@ -55,33 +43,32 @@ function App() {
     const todolistId1 = v1()
     const todolistId2 = v1()
 
-    const initialTodolists: TodolistType[] = [
-        {id: todolistId1, title: 'What to learn', filter: 'all'},
-        {id: todolistId2, title: 'What to buy', filter: 'all'},
+    const initialTodolists: TodolistDomainType[] = [
+        {id: todolistId1, title: 'What to learn', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
+        {id: todolistId2, title: 'What to buy', filter: 'all', addedDate: '', order: 0, entityStatus: "idle"},
     ]
 
     const initialtasks: TasksType = {
         [todolistId1]: [
-            {id: v1(), title: 'HTML&CSS', isDone: true},
-            {id: v1(), title: 'JS', isDone: false},
-            {id: v1(), title: 'React', isDone: false},
-            {id: v1(), title: 'Redux', isDone: true},
-            {id: v1(), title: 'TS', isDone: false},
+            {id: v1(), title: 'HTML&CSS', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
+            {id: v1(), title: 'JS', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
         ],
         [todolistId2]: [
-            {id: v1(), title: 'milk', isDone: true},
-            {id: v1(), title: 'bread', isDone: false},
-            {id: v1(), title: 'butter', isDone: true},
-            {id: v1(), title: 'juice', isDone: true},
-            {id: v1(), title: 'ice cream', isDone: false},
+            {id: v1(), title: 'butter', status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
+            {id: v1(), title: 'juice', status: TaskStatuses.Completed, order: 0, addedDate: '', deadline: '',
+                todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'},
         ],
     }
 
-    const [todolists, setTodolists] = useState<TodolistType[]>(initialTodolists)
+    const [todolists, setTodolists] = useState<TodolistDomainType[]>(initialTodolists)
     const [tasks, setTasks] = useState<TasksType>(initialtasks)
 
     const addTask = (title: string, todoId: string) => {
-        const newTask = {id: v1(), title, isDone: false}
+        const newTask:DomainTaskType = {id: v1(), title, status: TaskStatuses.New, order: 0, addedDate: '', deadline: '',
+            todoListId: todolistId1, startDate: '', description: '', priority: TaskPriorities.Low, entityStatus: 'idle'}
         setTasks({...tasks, [todoId]: [newTask, ...tasks[todoId]]})
     }
 
@@ -89,8 +76,8 @@ function App() {
         setTasks({...tasks, [todoId]: tasks[todoId].filter(el => el.id !== taskId)})
     }
 
-    const changeTaskStatus = (taskId: string, taskStatus: boolean, todoId: string) => {
-        setTasks({...tasks, [todoId]: tasks[todoId].map(el => el.id === taskId ? {...el, isDone: taskStatus} : el)})
+    const changeTaskStatus = (taskId: string, taskStatus: TaskStatuses, todoId: string) => {
+        setTasks({...tasks, [todoId]: tasks[todoId].map(el => el.id === taskId ? {...el, status: taskStatus} : el)})
     }
 
     const changeTaskTitle = (title: string, taskId: string, todoId: string) => {
@@ -105,7 +92,7 @@ function App() {
 
     const addTodolist = (title: string) => {
         const newTodolistId = v1()
-        const newTodolist: TodolistType = {id: newTodolistId, title, filter: 'all'}
+        const newTodolist: TodolistDomainType = {id: newTodolistId, title, filter: 'all', addedDate: '', order: 0, entityStatus: "idle"}
         setTodolists([newTodolist, ...todolists])
         setTasks({...tasks, [newTodolistId]: []})
     }
@@ -149,14 +136,14 @@ function App() {
                                               todoId={td.id}
                                               key={td.id}
                                               tasks={tasksForTodolist}
-                                              deleteTask={deleteTask}
+                                              removeTask={deleteTask}
                                               addTask={addTask}
                                               changeTaskStatus={changeTaskStatus}
                                               changeFilter={changeFilter}
                                               filter={td.filter}
                                               changeTaskTitle={changeTaskTitle}
-
-                                              deleteTodolist={deleteTodolist}
+                                              entityStatus={td.entityStatus}
+                                              removeTodolist={deleteTodolist}
                                               changeTodolistTitle={changeTodolistTitle}/>
                                 </Paper>
                             </Grid>
@@ -169,4 +156,4 @@ function App() {
     );
 }
 
-export default App;
+export default AppUseState;
