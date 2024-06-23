@@ -1,26 +1,30 @@
-import {AppThunkDispatchType} from "../state/store";
-import {GetTasksResponseType, ResponseType} from "../api/todolistsAPI";
-import {setAppErrorAC, setAppStatusAC} from "../state/app-reducer";
+import { GetTasksResponseType, ResponseType } from "api/todolistsAPI";
+import {AppDispatch} from "app/store";
+import {appActions} from "app/appSlice";
 
-export const handleServerAppError = <T>(dispatch: AppThunkDispatchType, data: ResponseType<T>) => {
-    if (data.messages.length || data) {
-        dispatch(setAppErrorAC(data.messages[0]))
-    } else {
-        dispatch(setAppErrorAC('Something went wrong'))
-    }
-    dispatch(setAppStatusAC('failed'))
+export const handleServerAppError = <T>(dispatch: AppDispatch, data: ResponseType<T>) => {
+  if (data.messages.length || data) {
+    dispatch(appActions.setAppError({error: data.messages[0]}));
+  } else {
+    dispatch(appActions.setAppError({error: "Something went wrong"}));
+  }
+  dispatch(appActions.setAppStatus({status:"failed"}));
+};
 
-}
+export const getTasksHandleServerAppError = (
+  dispatch: AppDispatch,
+  data: GetTasksResponseType,
+) => {
+  if (data.error !== null) {
+    dispatch(appActions.setAppError({error: data.error}));
+  }
+  dispatch(appActions.setAppStatus({status:"failed"}));
+};
 
-export const getTasksHandleServerAppError = (dispatch: AppThunkDispatchType, data: GetTasksResponseType) => {
-    if (data.error !== null) {
-        dispatch(setAppErrorAC(data.error))
-    }
-    dispatch(setAppStatusAC('failed'))
-
-}
-
-export const handleServerNetworkError = (dispatch: AppThunkDispatchType, error: {message: string}) => {
-    dispatch(setAppErrorAC(error.message))
-    dispatch(setAppStatusAC('failed'))
-}
+export const handleServerNetworkError = (
+  dispatch: AppDispatch,
+  error: { message: string },
+) => {
+  dispatch(appActions.setAppError({error: error.message}));
+  dispatch(appActions.setAppStatus({status:"failed"}));
+};
